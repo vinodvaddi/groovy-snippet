@@ -1,3 +1,6 @@
+// Condition 
+
+
 if(issue.getIssueType().getName()=="Incident" && issue.status.getName()=="Active"){
 def change = event?.getChangeLog()?.getRelated("ChildChangeItem")?.find {it.field == "Assignment Group"}
 
