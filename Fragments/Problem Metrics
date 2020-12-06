@@ -1,0 +1,20 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.security.roles.ProjectRoleManager
+
+boolean problem = jiraHelper.project.key in ["JMS", "PMM", "PMMQ", "IT"] && "Problem".equals(issue.issueType.name)
+if(!problem)
+	return false
+def user = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+def userUtil = ComponentAccessor.getUserUtil()
+def roleManager = ComponentAccessor.getComponentOfType(ProjectRoleManager) as ProjectRoleManager
+def adminRole = roleManager.getProjectRole("Administrators")
+def itilRole = roleManager.getProjectRole("ITIL")
+
+def project = issue.projectObject
+boolean isAdmin = roleManager.isUserInProjectRole(user, adminRole, project)
+if(isAdmin)
+	return true
+boolean isITIL = roleManager.isUserInProjectRole(user, adminRole, project)
+if(isITIL)
+	return true
+return false
